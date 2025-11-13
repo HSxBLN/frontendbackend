@@ -4,25 +4,26 @@ metadata:
   name: frontend-ingress
   namespace: demo-hauke
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"  # Regex für Pfade
 spec:
   ingressClassName: nginx
   rules:
     - host: app.hauke.diogohack.shop
       http:
         paths:
-          - path: /
-            pathType: Prefix
+          # Frontend auf /
+          - path: /(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: frontend
                 port:
                   number: 80
-          - path: /api
-            pathType: Prefix
+          # Backend auf /api
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: backend
                 port:
                   number: 3000
-            
